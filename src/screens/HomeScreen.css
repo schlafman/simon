@@ -1,0 +1,20 @@
+.home {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  text-align: center;
+}
+
+.home__round {
+  margin-top: var(--s-16);
+}
+
+.home__status {
+  min-height: 24px;
+  margin: var(--s-8) 0 var(--s-16);
+  color: var(--text-muted);
+}
+
+.home__actions {
+  margin-top: var(--s-24);
+}

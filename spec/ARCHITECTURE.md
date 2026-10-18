@@ -225,3 +225,25 @@ type HistoryData = {
 7. [MDN – Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API) – אירועי הסתרה וחזרה של אפליקציה.
 8. [Vite PWA – Prompt for Update](https://vite-pwa-org.netlify.app/guide/prompt-for-update) – שליטה בעדכוני Service Worker ללא רענון אוטומטי.
 9. [GitHub Docs – GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions) – מכסות וחיוב Actions.
+
+## החלטות מרכזיות (ADRs)
+
+### ADR-1: ניווט פנימי באמצעות State, ללא Router
+**הקשר:** יש שני מסכים בלבד, ומשחק פעיל חייב לשרוד מעבר ביניהם; GitHub Pages אינו תומך ב-Deep Links ללא Rewrite.
+**החלטה:** המסך הנוכחי (`home` / `about`) נשמר ב-`useState` ברכיב `App`, והמסכים מוחלפים בתוך אותו React Tree. ה-URL אינו משתנה.
+**השלכות:** אין תלות ב-Router ואין בעיות 404 בפריסה; לא ניתן לקשר ישירות למסך "אודות" (לא נדרש ב-PRD). מצב המשחק יוחזק ב-`App` או מעליו כדי שלא יאופס במעבר מסך.
+
+### ADR-2: לוח המשחק ב-CSS Grid עם כיווניות LTR מקומית
+**הקשר:** הממשק כולו RTL, אך מיקום הצבעים בלוח הוא מרחבי וקבוע (ירוק/אדום למעלה, צהוב/כחול למטה) ואסור שיתהפך.
+**החלטה:** הלוח הוא Grid של 2×2 עם `direction: ltr` מקומי וארבעה `<button>` סמנטיים בסדר ירוק, אדום, צהוב, כחול; צורת הרבע נוצרת ב-`border-radius` בפינה החיצונית, והדיסק המרכזי הוא שכבה מעל.
+**השלכות:** מימוש פשוט בלי SVG; כל רבע הוא כפתור נגיש עם שם בעברית. אזור המגע של כל כפתור הוא ריבוע שפינתו מעוגלת, ומוסתר חלקית מתחת לדיסק המרכזי.
+
+### ADR-3: גווני רקע כהים מקורבים מה-Mockups
+**הקשר:** ב-Style Guide אין קוד HEX לרקע הכחול-כהה ולמשטחים של ה-Theme הכהה.
+**החלטה:** הוגדרו `--bg: #07142a` ו-`--surface: #0f2340` (ועוד גוונים נלווים) כקירוב חזותי ל-Mockups, כ-CSS Variables במקום אחד (`src/styles/global.css`).
+**השלכות:** הערכים אינם מחייבים וניתנים להחלפה בקלות אם יסופק ערך רשמי.
+
+### ADR-4: TypeScript 7 ו-Vite 8
+**הקשר:** בעת הקמת הפרויקט (אוקטובר 2026) אלה הגרסאות היציבות העדכניות שהותקנו ב-npm, עם Node.js 24 LTS.
+**החלטה:** שימוש בגרסאות אלה; Typecheck באמצעות `tsc -b` (ה-tsconfig מוגדר עם `noEmit`).
+**השלכות:** `npm run typecheck` ו-`npm run build` מריצים את אותה בדיקת טיפוסים.
